@@ -1,0 +1,52 @@
+ 
+#!/bin/sh
+
+AUTOPROJ_INSTALL_URL=https://raw.githubusercontent.com/rock-core/autoproj/master/bin/autoproj_install
+
+AUTOPROJ_REPO=rock-core/autoproj
+AUTOBUILD_REPO=rock-core/autobuild
+BRANCH=master
+
+function usage() {
+    printf "Usage: $0 [options]\n\n"
+    printf "Options:\n"
+    printf "  -p AUTOPROJ_REPO\t\t\t Autoproj repository\n"
+    printf "  -h\t\t\t Shows this help message\n"
+    printf "  -d AUTOBUILD_REPO\t\t\t Autobuild repository\n"
+    printf "  -b BRANCH\t\t\t Branch for autoproj and autobuild repos\n"
+    exit 0
+}
+
+while getopts "p:d:b:h" OPT; do
+    case "${OPT}" in
+        "p") AUTOPROJ_REPO=${OPTARG};;
+        "d") AUTOBUILD_REPO=${OPTARG};;
+        "b") BRANCH=${OPTARG};;
+        "h") usage;;
+        "?") exit 1;;
+    esac
+done
+
+set -e
+
+mkdir -p ~/dev/
+cd ~/dev/
+
+[ -f "autoproj_install" ] || wget -nv ${AUTOPROJ_INSTALL_URL}
+[ -d ".autoproj" ] || { mkdir -p .autoproj; cat <<EOF > .autoproj/config.yml; }
+---
+osdeps_mode: all
+GITORIOUS: ssh
+GITHUB: ssh
+CODE_INTEGRATION: true
+CODE_MANAGE_FOLDERS: false
+apt_dpkg_update: true
+EOF
+
+cat <<EOF > autoproj.gemfile
+source "https://rubygems.org"
+gem "autoproj", github: "${AUTOPROJ_REPO}", branch: "${BRANCH}"
+gem "autobuild", github: "${AUTOBUILD_REPO}", branch: "${BRANCH}"
+EOF
+
+ruby autoproj_install --gemfile=autoproj.gemfile

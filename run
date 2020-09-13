@@ -1,0 +1,22 @@
+XSOCK=/tmp/.X11-unix
+XAUTH=/tmp/.docker.xauth
+touch "${XAUTH}"
+xauth nlist "${DISPLAY}" | sed -e 's/^..../ffff/' | xauth -f "${XAUTH}" nmerge -
+
+echo $DISPLAY
+
+docker run -it --rm \
+            --net host \
+            --volume="/etc/localtime:/etc/localtime:ro" \
+            --volume="${HOME}/.ssh:/home/${USERNAME}/.ssh:ro" \
+            --volume="${HOME}/.gitconfig:/home/${USERNAME}/.gitconfig:ro" \
+            --env="TERM" \
+            --user=$USERNAME \
+            --workdir="/home/$USERNAME" \
+            --name autoproj_devel \
+            --privileged \
+            --volume=${XSOCK}:${XSOCK}:rw \
+            --volume=${XAUTH}:${XAUTH}:rw \
+            --env=XAUTHORITY=${XAUTH} \
+            --env=DISPLAY \
+            autoproj:develop
