@@ -10,6 +10,7 @@ docker run -it --rm \
             --volume="/etc/localtime:/etc/localtime:ro" \
             --volume="${HOME}/.ssh:/home/${USERNAME}/.ssh:ro" \
             --volume="${HOME}/.gitconfig:/home/${USERNAME}/.gitconfig:ro" \
+            --volume="${HOME}/workspace/autoproj-development-env:/home/${USERNAME}" \
             --env="TERM" \
             --user=$USERNAME \
             --workdir="/home/$USERNAME" \

@@ -1,0 +1,6 @@
+---
+- pkg_set:something:
+    branch: some_branch
+
+- some_pacakge:
+    branch: some_branch

@@ -1,0 +1,5 @@
+cmake_package 'google_benchmark' do |pkg|
+    pkg.define 'BENCHMARK_ENABLE_TESTING', "OFF"
+end
+
+metapackage 'autobuild', 'tools/autobuild'

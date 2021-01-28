@@ -4,3 +4,6 @@ docker build -t autoproj:develop --build-arg USERNAME=$USERNAME \
              --build-arg UUID=$(id -u) \
              --build-arg UGID=$(id -g) \
              -f image/Dockerfile image
+mkdir -p ${HOME}/workspace/autoproj-development-env
+mkdir -p ${HOME}/workspace/autoproj-development-env/dev
+cp -r image/autoproj.buildconf/autoproj ${HOME}/workspace/autoproj-development-env/dev

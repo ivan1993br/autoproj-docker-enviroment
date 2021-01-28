@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get update && \
@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get install -y sudo && \
     apt-get install -y ruby && \
     apt-get install -y ruby-dev && \
+    apt-get install -y zlib1g-dev && \
     apt-get install -y locales && \
     apt-get install -y tzdata && \
     apt-get install -y bash-completion && \
@@ -27,6 +28,8 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get install -y terminator && \
     apt-get install -y man-db && \
     apt-get install -y manpages && \
+    apt-get install -y libasound2 && \
+    apt-get install -y libgdm-dev && \
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
     install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
     echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vscode.list && \
@@ -62,5 +65,6 @@ RUN usermod  --uid $UUID $USERNAME && \
     groupmod --gid $UGID $USERNAME
 
 COPY rootfs/ /
+
 
 CMD ["/bin/bash"]

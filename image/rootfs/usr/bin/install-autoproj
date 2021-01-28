@@ -3,6 +3,7 @@
 
 AUTOPROJ_INSTALL_URL=https://raw.githubusercontent.com/rock-core/autoproj/master/bin/autoproj_install
 
+
 AUTOPROJ_REPO=rock-core/autoproj
 AUTOBUILD_REPO=rock-core/autobuild
 BRANCH=master
@@ -29,18 +30,37 @@ done
 
 set -e
 
-mkdir -p ~/dev/
-cd ~/dev/
-
 [ -f "autoproj_install" ] || wget -nv ${AUTOPROJ_INSTALL_URL}
 [ -d ".autoproj" ] || { mkdir -p .autoproj; cat <<EOF > .autoproj/config.yml; }
 ---
 osdeps_mode: all
-GITORIOUS: ssh
-GITHUB: ssh
-CODE_INTEGRATION: true
-CODE_MANAGE_FOLDERS: false
+GITORIOUS: http
+GITHUB: http
 apt_dpkg_update: true
+osdeps_mode: all
+GITHUB_ROOT: 'git@github.com:'
+GITHUB_PUSH_ROOT: 'git@github.com:'
+GITHUB_PRIVATE_ROOT: 'git@github.com:'
+GITORIOUS_ROOT: 'git@gitorious.org:'
+GITORIOUS_PUSH_ROOT: 'git@gitorious.org:'
+GITORIOUS_PRIVATE_ROOT: 'git@gitorious.org:'
+CODE_INTEGRATION: true
+CODE_MANAGE_FOLDERS: true
+CODE_ADD_CONFIG: true
+autoproj_test_utility_default: true
+manifest_name: manifest
+user_shells:
+- bash
+ROCK_SELECTED_FLAVOR: master
+ROCK_FLAVOR: master
+ROCK_BRANCH: master
+typelib_cxx_loader: castxml
+USE_PYTHON: false
+syskit_use_bundles: true
+USE_OCL: false
+rtt_target: gnulinux
+rtt_corba_implementation: none
+
 EOF
 
 cat <<EOF > autoproj.gemfile
@@ -49,4 +69,12 @@ gem "autoproj", github: "${AUTOPROJ_REPO}", branch: "${BRANCH}"
 gem "autobuild", github: "${AUTOBUILD_REPO}", branch: "${BRANCH}"
 EOF
 
+export AUTOPROJ_OSDEPS_MODE=all
+export AUTOPROJ_BOOTSTRAP_IGNORE_NONEMPTY_DIR=1
+export SHELL=bash
+
 ruby autoproj_install --gemfile=autoproj.gemfile
+. ./env.sh
+autoproj test enable
+aup
+amake

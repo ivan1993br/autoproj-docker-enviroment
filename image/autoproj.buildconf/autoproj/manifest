@@ -1,0 +1,11 @@
+package_sets:
+   - github: rock-core/package_set
+     private: false
+layout:
+  - fakefs
+  - timecop
+  - aruba
+  - svn
+  - cmake
+  - tools/autoproj
+  - tools/autobuild
